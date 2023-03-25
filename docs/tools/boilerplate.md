@@ -6,7 +6,7 @@
 ## Установка
 
 ```bash
-$ npm -G @42px/frontend-arch-cli
+$ npm install -G @42px/frontend-arch-cli
 ```
 
 ## Создание проекта
