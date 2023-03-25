@@ -17,7 +17,7 @@ $ npm -G @42px/frontend-arch-cli
 $ arch-cli project:init projectName
 ```
 
-В результате данной команды будет склонирован репозиторий с бойлерплейтом https://github.com/qvlxty/42px-fs-arch-boilerplate
+В результате данной команды будет склонирован репозиторий с бойлерплейтом https://github.com/42-px/fs-arch-boilerplate
 
 ## CLI комманды
 
