@@ -4,8 +4,8 @@
 
 ## Установка
 
-1. Скопируйте директорию в `@/ui`
-2. Подключите init.ts:
+1. Скопируйте директорию в `@/ui`.
+2. Подключите `init.ts`:
 
 ```ts
 // ./src/init.ts
@@ -13,25 +13,25 @@
 import './ui/theming/init'
 ```
 
-## API 
+## API
 
 ```ts
 changeTheme: Event<string>
-``` 
+```
 
-effector-ивент для изменения темы на ту, название которой надо передать параметром
+effector-ивент для изменения темы на ту, название которой надо передать параметром.
 
 ```ts
 registerTheme: Event<string>
-``` 
+```
 
-effector-ивент, позволяющий императивно регистрировать новую тему
+effector-ивент, позволяющий императивно регистрировать новую тему.
 
 ## Использование
 
 ### Хук useTheme
 
-Для доступа к переменным темы можете использовать хук useTheme:
+Для доступа к переменным темы можете использовать хук `useTheme`:
 
 ```tsx
 import { themeVar, useTheme } from '@/ui/theming'
@@ -54,20 +54,22 @@ export const MyPopup = () => {
 
 ### Инъекция через themeVar
 
-Вы также можете в процессе описания стилей элементов использовать функцию themeVar:
+Вы также можете в процессе описания стилей элементов использовать функцию `themeVar`:
 
 ```tsx
-
 type NavItemProps = {
-    active?: boolean
+  active?: boolean
 }
 const NavItem = styled.div<NavItemProps>`
-    color: ${themeVar('grayNonActive')};
-    font-weight: 700;
-    padding-bottom: 8px;
-    ${({ active }) => Boolean(active) && active && css`
-        color: ${themeVar('green')};
-        border-bottom: 3px solid ${themeVar('green')};
+  color: ${themeVar('grayNonActive')};
+  font-weight: 700;
+  padding-bottom: 8px;
+  ${({ active }) =>
+    Boolean(active) &&
+    active &&
+    css`
+      color: ${themeVar('green')};
+      border-bottom: 3px solid ${themeVar('green')};
     `}
 `
 ```
@@ -76,10 +78,10 @@ const NavItem = styled.div<NavItemProps>`
 
 Доступные темы находятся в директории `@/ui/theming/themes`.
 
-Для добавления новой, необходимо:
+Для добавления новой темы необходимо:
 
-1. Создать файл с темой 
-2. Описать тему, пример:
+1. Создать файл с темой.
+2. Описать тему. Пример:
 
 ```ts
 import { ThemeItem } from '../model/types'
@@ -96,13 +98,11 @@ export const darkTheme = {
   baseFont: BASE_FONT,
   baseFontLight: LIGHT_FONT,
 
-
   default800: '#15151e',
   default700: '#2a2a3c',
   default600: '#3f3f5a',
   default500: '#8888aa',
   default400: '#a5a5c0',
-
 
   blue500: '#1E90FF',
   green500: '#6FCF97',
@@ -115,14 +115,13 @@ export const createDarkTheme = (): ThemeItem => ({
   name: 'dark',
   variables: darkTheme,
 })
-
 ```
 
-3. Добавить тему в initial значение стора из model/private.ts
+3. Добавить тему в initial-значение стора из `model/private.ts`:
 
 ```ts
 export const $availableThemes = privateTheming.store<ThemeItem[]>([
-  createDefaultTheme(), createDarkTheme(),
+  createDefaultTheme(),
+  createDarkTheme(),
 ])
-
 ```

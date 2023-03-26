@@ -17,13 +17,13 @@ export default {
     sidebar,
     docFooter: {
       prev: 'Предыдущая страница',
-      next: 'Следующая страница'
+      next: 'Следующая страница',
     },
     outlineTitle: 'Главы',
     logo: '/logo.png',
     footer: {
       message: '42px Company',
-      copyright: `Copyright © 2019-${new Date().getFullYear()}`
-    }
-  }
+      copyright: `Copyright © 2019-${new Date().getFullYear()}`,
+    },
+  },
 }

@@ -4,8 +4,7 @@
 
 Входные данные: наличие react-router v5
 
-Если требуется завязать effector-логику на переходах по страницам (будь то переход на главную страницу после успешной регистрации, переход на главную страницу после успешного действия, или любой другой кейс),то ниже приведён пример враппера, который подписывает события из `@/app` на работу вместе с history
-
+Если требуется завязать effector-логику на переходах по страницам (будь то переход на главную страницу после успешной регистрации, переход на главную страницу после успешного действия или любой другой кейс), то ниже приведен пример враппера, который подписывает события из `@/app` на работу вместе с history:
 
 ### @/features/app/model/public.ts
 
@@ -25,29 +24,27 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 
 import {
-    pushNavigate,
-    replaceNavigate,
-    goBackNavigate,
+  pushNavigate,
+  replaceNavigate,
+  goBackNavigate,
 } from '@/features/app/model'
 
-export const RouterNavigator =  () => {
-    const history = useHistory()
+export const RouterNavigator = () => {
+  const history = useHistory()
 
-    React.useEffect(() => {
-        const unwatchPush = pushNavigate.watch((url) => history.push(url))
-        const unwatchReplace = replaceNavigate.watch((url) => history.replace(url))
-        const unwatchGoBack = goBackNavigate.watch(() => history.goBack())
-        return () => {
-            unwatchPush()
-            unwatchGoBack()
-            unwatchReplace()
-        }
-    }, [history])
+  React.useEffect(() => {
+    const unwatchPush = pushNavigate.watch((url) => history.push(url))
+    const unwatchReplace = replaceNavigate.watch((url) => history.replace(url))
+    const unwatchGoBack = goBackNavigate.watch(() => history.goBack())
+    return () => {
+      unwatchPush()
+      unwatchGoBack()
+      unwatchReplace()
+    }
+  }, [history])
 
-
-    return null
+  return null
 }
-
 ```
 
 ### @/src/Routes.tsx
@@ -74,20 +71,16 @@ export const Routes = () => {
 Ниже приведены примеры применения императивного перехода:
 
 ```ts
-
 sample({
-    clock: logout,
-    target: pushNavigate,
-    fn: () => '/'
+  clock: logout,
+  target: pushNavigate,
+  fn: () => '/',
 })
 
-
 sample({
-    clock: fetchAuthDataFx.doneData,
-    filter: $isRegisterIncomplete,
-    fn: () => `/register`,
-    target: pushNavigate,
+  clock: fetchAuthDataFx.doneData,
+  filter: $isRegisterIncomplete,
+  fn: () => `/register`,
+  target: pushNavigate,
 })
-
-
 ```
