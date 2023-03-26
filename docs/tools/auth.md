@@ -1,11 +1,10 @@
 # 🔑 Авторизация / Аутентификация
 
-В данном гайде будет описан пример реализации jwt аутентификации и сохранение ключа для авторизованных запросов при взаимодействия с rest-api.
+В данном гайде будет описан пример реализации JWT-аутентификации и сохранение ключа для авторизованных запросов при взаимодействия с REST API.
 
 ## Data Access Layer
 
-Для начала давайте подготовим data access layer:
-
+Для начала подготовим data access layer:
 
 ```bash
 .
@@ -26,9 +25,10 @@
 
 ### Request
 
-В директории Request будут располагаться обёртки для работы с axios, которые будут помогать нам использовать их в математике effector:
+В директории `request` будут располагаться обертки для работы с axios, которые будут помогать нам использовать их в математике effector:
 
 #### units.ts
+
 ```ts
 import { attach, createDomain } from 'effector'
 import { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios'
@@ -51,14 +51,17 @@ type Request = {
   baseUrl?: AxiosRequestConfig['baseURL']
   responseType?: AxiosRequestConfig['responseType']
   withCredentials?: AxiosRequestConfig['withCredentials']
-
 }
 
 export type AccessToken = string | null
 
 export const restApi = createDomain('rest-api')
 
-export const requestFx = restApi.effect<Request, AxiosResponse<any>, AxiosError>()
+export const requestFx = restApi.effect<
+  Request,
+  AxiosResponse<any>,
+  AxiosError
+>()
 export const authRequestFx = attach({
   source: $accessToken,
   effect: requestFx,
@@ -67,23 +70,19 @@ export const authRequestFx = attach({
     accessToken: accessToken || undefined,
   }),
 })
-
 ```
 
-Обратите внимание, мы имеем 2 эффекта для использования запросов: **authRequestFx** и **requestFx**. Их главное отличие в том, что в первом эффекте мы подмешиваем `$accessToken`, который будем сохранять после авторизации, и загружать при каждом старте приложения.
-
-
+Обратите внимание, что мы имеем 2 эффекта для использования запросов: **authRequestFx** и **requestFx**. Их главное отличие в том, что в первом эффекте мы подмешиваем `$accessToken`, который будем сохранять после авторизации и загружать при каждом старте приложения.
 
 #### init.ts
+
 ```ts
 import axiosLib from 'axios'
-import {
-  requestFx,
-} from './units'
+import { requestFx } from './units'
 
 const axios = axiosLib.create({
   baseURL: '/api',
-  withCredentials: true
+  withCredentials: true,
 })
 
 axios.interceptors.response.use(undefined, (error) => {
@@ -109,15 +108,14 @@ requestFx.use((params) => {
     baseURL: params.baseUrl,
   })
 })
-
 ```
 
 ### Auth
 
 #### units.ts
-```ts
 
-// @/dal/auth/units.ts 
+```ts
+// @/dal/auth/units.ts
 
 /*
   Здесь храним эффектор-юниты для управления access-token
@@ -135,12 +133,9 @@ export const clearAccessToken = authDomain.event<void>()
 export const loadAccessTokenFx = authDomain.effect<void, string | null, Error>()
 export const saveAccessTokenFx = authDomain.effect<string, void, Error>()
 export const clearAccessTokenFx = authDomain.effect<void, void, Error>()
-
-
 ```
 
 #### init.ts
-
 
 ```ts
 import { forward } from 'effector'
@@ -162,7 +157,7 @@ $accessToken
 
 forward({
   from: clearAccessToken,
-  to: clearAccessTokenFx
+  to: clearAccessTokenFx,
 })
 
 loadAccessTokenFx.use(() => localStorage.getItem(AUTH_TOKEN))
@@ -170,30 +165,30 @@ saveAccessTokenFx.use((token) => localStorage.setItem(AUTH_TOKEN, token))
 clearAccessTokenFx.use(() => localStorage.removeItem(AUTH_TOKEN))
 ```
 
+## Аутентификация
 
-## Аутентификация 
-
-Теперь, когда слой dal настроен, можно реализовать вход в систему на стороне фичи **login**
+Теперь, когда слой dal настроен, можно реализовать вход в систему на стороне фичи **login**:
 
 #### form.ts
+
 ```ts
 import { requiredValidator } from '@/lib/form-validators'
 import { createForm } from 'effector-forms'
 import { d } from './domain'
 
 export const loginForm = createForm({
-    domain: d,
-    fields: {
-        phone: {
-            init: '',
-            rules: [requiredValidator,],
-        },
-        password: {
-            init: '',
-            rules: [requiredValidator],
-        },
+  domain: d,
+  fields: {
+    phone: {
+      init: '',
+      rules: [requiredValidator],
     },
-    validateOn: ['submit'],
+    password: {
+      init: '',
+      rules: [requiredValidator],
+    },
+  },
+  validateOn: ['submit'],
 })
 ```
 
@@ -202,7 +197,6 @@ export const loginForm = createForm({
 ```ts
 // private.ts
 
-
 export const loginFx = attachWrapper({
   effect: requestFx,
   mapParams: (payload: LoginFxPayload) => ({
@@ -210,22 +204,24 @@ export const loginFx = attachWrapper({
     body: payload,
     url: '/auth/login',
   }),
-  mapResult: ({ result }: { result: AxiosResponse<LoginFxResponse> }) => result.data,
-  mapError: ({ error }: { error: AxiosError }) => error.response?.data as LoginFxError
+  mapResult: ({ result }: { result: AxiosResponse<LoginFxResponse> }) =>
+    result.data,
+  mapError: ({ error }: { error: AxiosError }) =>
+    error.response?.data as LoginFxError,
 })
 
 export const fetchProfileDataFx = attachWrapper({
-  effect: authRequestFx, // Обратите внимание, здесь используется эффект authRequest, в котором подмешивается токен
+  effect: authRequestFx, // Обратите внимание: здесь используется эффект authRequest, в котором подмешивается токен
   mapParams: () => {
     return {
       method: Method.get,
       url: '/user/profile',
     }
   },
-  mapResult: ({ result }: { result: AxiosResponse<AuthDataFxResponse> }) => result.data,
-  mapError: ({ error }: { error: AxiosError }) => error.response?.data
+  mapResult: ({ result }: { result: AxiosResponse<AuthDataFxResponse> }) =>
+    result.data,
+  mapError: ({ error }: { error: AxiosError }) => error.response?.data,
 })
-
 ```
 
 #### init.ts
@@ -233,35 +229,31 @@ export const fetchProfileDataFx = attachWrapper({
 ```ts
 // init.ts
 
-
 sample({
-    clock: loginFx.doneData,
-    fn: ({ data }) => data.userData.accessToken,
-    filter: ({ data }) => data.userData.isAuthorized,
-    target: [
-      saveAccessTokenFx,
-      replaceNavigate.prepend(() => '/')
-    ]
+  clock: loginFx.doneData,
+  fn: ({ data }) => data.userData.accessToken,
+  filter: ({ data }) => data.userData.isAuthorized,
+  target: [saveAccessTokenFx, replaceNavigate.prepend(() => '/')],
 })
 
 sample({
-    clock: loginFx.done,
-    target: loginForm.reset
+  clock: loginFx.done,
+  target: loginForm.reset,
 })
 
 sample({
-    clock: loginForm.formValidated,
-    fn: ({ phone, password }) => ({
-        phone, code: password
-    }),
-    target: loginFx,
+  clock: loginForm.formValidated,
+  fn: ({ phone, password }) => ({
+    phone,
+    code: password,
+  }),
+  target: loginFx,
 })
-
 ```
 
 ## Загрузка токена
 
-Для работы авторизации, после запуска приложения токен необходимо загрузить. Например, так:
+Для работы авторизации после запуска приложения токен необходимо загрузить. Например, так:
 
 ```ts
 // app/model/init.ts
@@ -272,10 +264,9 @@ import { $appLoaded, appInit } from './public'
 $appLoaded.on(loadAccessTokenFx.done, () => true)
 
 forward({
-    from: appInit,
-    to: loadAccessTokenFx,
+  from: appInit,
+  to: loadAccessTokenFx,
 })
-
 ```
 
 ```ts
@@ -293,18 +284,16 @@ export const App = () => {
 
 ## Использование
 
-Теперь, для защищённых авторизацией запросов к rest-api вы можете использовать в качестве базового эффекта authRequestFx:
-
+Теперь для защищенных авторизацией запросов к REST API вы можете использовать в качестве базового эффекта `authRequestFx`:
 
 ```ts
 export const fetchTodos = attachWrapper({
-    effect: authRequestFx,
-    mapParams: () => ({
-        method: Method.get,
-        url: '/todo',
-    }),
-    mapResult: ({ result }: { result: AxiosResponse<Todos[]> }) => result.data,
-    mapError: ({ error }: { error: AxiosError }) => error.response?.data
+  effect: authRequestFx,
+  mapParams: () => ({
+    method: Method.get,
+    url: '/todo',
+  }),
+  mapResult: ({ result }: { result: AxiosResponse<Todos[]> }) => result.data,
+  mapError: ({ error }: { error: AxiosError }) => error.response?.data,
 })
-
 ```

@@ -1,5 +1,7 @@
 {
   "devDependencies": {
+    "@cspell/dict-ru_ru": "^2.0.5",
+    "cspell-cli": "^6.30.1",
     "vitepress": "^1.0.0-alpha.61"
   },
   "name": "architecture-guide",
@@ -8,7 +10,8 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "spell-check": "cspell-cli docs/**/*.md"
   },
   "author": "qvlxty",
   "license": "ISC",
