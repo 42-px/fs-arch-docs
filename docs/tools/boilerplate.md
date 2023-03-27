@@ -6,7 +6,7 @@
 ## Установка
 
 ```bash
-$ npm install -G @42px/frontend-arch-cli
+$ npm install -g @42px/frontend-arch-cli
 ```
 
 ## Создание проекта
@@ -24,7 +24,7 @@ $ arch-cli project:init projectName
 ### Фичи
 
 ```bash
-$ arch-cli create feature todo
+$ arch-cli feat:create myfeature1
 ```
 
 Создает фичу с директориями `view/model` и подключает ее в `@/src/init.ts`

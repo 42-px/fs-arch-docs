@@ -6,6 +6,7 @@ export default {
   title: '42px Frontend Arch.',
   description: 'Feature Sliced',
   base: '/front-arch/',
+  lastUpdate: true,
   themeConfig: {
     socialLinks: [
       {
