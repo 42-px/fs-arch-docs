@@ -30,7 +30,7 @@ test('add to cart', async () => {
 
 Обращения к внешнему API подменяются на моки.
 
-Пример юнит-теста на модель можно посмотреть в [features/cart/model/model.spec.ts](examples/react/src/features/cart/model/model.spec.ts)
+Пример юнит-теста на модель можно посмотреть в [features/cart/model/model.spec.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/features/cart/model/model.spec.ts)
 
 Покрывать тестами элементарные модели зачастую слишком затратно. Однако если в модели имеются нетривиальные вычисления, всегда лучше написать тест, чем накликивать в браузере (это действительно экономит время).
 

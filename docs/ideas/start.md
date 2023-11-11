@@ -13,10 +13,10 @@
 ## Структура проекта
 
 ```bash
-dal
+├── dal
 ├── declarations
 └── features
-    └── some-feature
+   └── some-feature
         ├── init.ts
         ├── model
         │   ├── public.ts
@@ -29,27 +29,24 @@ dal
             ├── containers
             ├── entries
             └── index.ts
-
-pages
-└── some-page
-    ├── init.ts
-    ├── model
-    │   ├── public.ts
-    │   ├── private.ts
-    │   ├── reducers.ts
-    │   ├── init.ts
-    │   └── index.ts
-    └── view
-        ├── parts
-        ├── containers
-        ├── entries
-        └── index.ts
-
-ui
-├── PrimaryButton.tsx
-├── Dropdown
-└── index.ts
-
-lib
+├── pages
+    └── some-page
+        ├── init.ts
+        ├── model
+        │   ├── public.ts
+        │   ├── private.ts
+        │   ├── reducers.ts
+        │   ├── init.ts
+        │   └── index.ts
+        └── view
+            ├── parts
+            ├── containers
+            ├── entries
+            └── index.ts
+├── ui
+    ├── PrimaryButton.tsx
+    ├── Dropdown
+    └── index.ts
+└── lib
 
 ```

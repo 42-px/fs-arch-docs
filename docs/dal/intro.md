@@ -29,14 +29,14 @@ DAL может хранить внутри себя состояние, кото
 3. События для аутентификации и изменения токена `authenticate` и `tokenChanged` (на случай если нам понадобится поддерживать механизм рефреша токена).
 4. Эффекты-обертки над http-запросами `requestFx` и `authRequestFx`.
 
-Вся основная логика расположена в [init.ts](examples/react/src/dal/request/init.ts)
+Вся основная логика расположена в [init.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/dal/request/init.ts)
 Здесь связывается стор `$accessToken` с эвентами аутентификации, предоставляется имплементация для `requestFx` и `authRequestFx`, а также обеспечивается сохранение и чтение токена из `localStorage`.
 
-Эффекты с внешним API, оборачивающие http-эндпоинты, находятся в корне точки входа в файлах [auth.ts](examples/react/src/dal/auth.ts) и [products.ts](examples/react/src/dal/products.ts).
+Эффекты с внешним API, оборачивающие http-эндпоинты, находятся в корне точки входа в файлах [auth.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/dal/auth.ts) и [products.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/dal/products.ts).
 
 Для маппинга параметров запроса и ответа мы используем attachWrapper из библиотеки [@42px/effector-extra](https://www.npmjs.com/package/@42px/effector-extra).
 
-Тут стоит обратить внимание на `forward` в [auth.ts](examples/react/src/dal/auth.ts):
+Тут стоит обратить внимание на `forward` в [auth.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/dal/auth.ts):
 
 ```typescript
 forward({
@@ -47,10 +47,13 @@ forward({
 
 Этот `forward` автоматически установит `$accessToken` при успешном резолве эффекта `signInFx`. Внешнему приложению не нужно об этом беспокоиться.
 
+> **Upd 12.11.23** В актуальной версии effector (v22) рекомендуется использовать `sample` вместо `forward`.  
+https://effector.dev/docs/api/effector/sample
+
 Все что остается внешнему приложению:
 
-1. Инициализировать состояние аутентификации в тот момент, когда инициализируется само приложение. Это происходит в [features/app/model/init.ts](examples/react/src/features/app/model/init.ts).
-2. Импортировать эффекты для получения/мутации данных и присоединить к ним пользовательский ввод. Пример можно посмотреть в модели [sign-in](examples/react/src/features/sign-in/model/private.ts).
+1. Инициализировать состояние аутентификации в тот момент, когда инициализируется само приложение. Это происходит в [features/app/model/init.ts](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/features/app/model/init.ts).
+2. Импортировать эффекты для получения/мутации данных и присоединить к ним пользовательский ввод. Пример можно посмотреть в модели [sign-in](https://github.com/42-px/frontend-architecture/tree/master/examples/react/src/features/sign-in/model/private.ts).
 
 Данная схема является лишь одной из возможных. Конкретная реализация внутренностей слоя DAL и его API зависит от задач конкретного приложения, его источников данных и способов аутентификации и авторизации.
 
